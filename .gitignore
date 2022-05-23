@@ -53,6 +53,7 @@ coverage.xml
 
 # Data
 ./data/*
+data/*
 
 # Translations
 *.mo
