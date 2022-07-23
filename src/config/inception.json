@@ -1,0 +1,21 @@
+{
+    "model": "inceptionv3",
+    "base_image_path": "../../../../large-project-data/OCT2017/",
+    "train_data_path": "../../../../large-project-data/OCT2017/light-set/",
+    "validation_data_path": "../../../../large-project-data/OCT2017/test",
+    "data_labels": "inferred",
+    "data_label_mode": "categorical",
+    "shuffle": true,
+    "evaluate": false,
+    "num_classes": 4,
+    "head_activation": "softmax",
+    "batch_size": 32,
+    "image_height": 299,
+    "image_width": 299,
+    "num_channels": 3,
+    "random_seed": 42,
+    "learning_rate": 1e-3,
+    "num_epochs": 1,
+    "weights": "imagenet",
+    "include_top": false
+  }
