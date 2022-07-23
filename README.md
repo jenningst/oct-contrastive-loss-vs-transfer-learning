@@ -7,6 +7,11 @@
 - Mendeley Data (https://data.mendeley.com/datasets/rscbjbr9sj/2)
 
 ## Usage
+### Adding the SavedModel
+Since Github has restrictions on large files, the repo doesn't include the saved model. To have this demo run correctly (i.e. build and run the API) you need to first:
+1. Copy all the files included in the saved model (finetune_20epochs_20k_unlabeled_1k_labeled) into `/models/saved_models/simclr_net`
+2. Copy a few sample files into the `/corpus` directory so you can test the `corpus_predict` endpoing
+
 ### Building
 - To build a docker image from the project run the following command from the root project directory run:
 
