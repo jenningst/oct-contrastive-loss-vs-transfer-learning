@@ -6,6 +6,28 @@
 ## Data Lineage
 - Mendeley Data (https://data.mendeley.com/datasets/rscbjbr9sj/2)
 
+## Usage
+### Building
+- To build a docker image from the project run the following command from the root project directory run:
+
+```
+docker build -t <TAG_NAME> .
+```
+
+### Running the API Locally
+This project uses FastAPI to expose a handful of API endpoints for:
+- `GET /` -- A basic API "liveness" test
+- `GET /predict{image}` -- Making a prediction given a sample image
+- `GET /corpus_predict`Making a prediction from a random sample in an included corpus of images
+
+To start the API in hot-reload mode, run the following command from the `/src` directory:
+
+```
+uvicorn classifier.inference:api --reload
+```
+
+After the API service starts, open a browser to http://localhost:8000 to test the above endpoints.
+
 
 ## Questions     
 1. Perform feature engineering 
