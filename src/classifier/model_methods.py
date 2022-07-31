@@ -1,5 +1,6 @@
 import os
 import random
+import sys
 
 import numpy as np
 import tensorflow as tf
@@ -7,13 +8,16 @@ import tensorflow as tf
 from dotenv import load_dotenv
 from sklearn.metrics import classification_report
 
+sys.path.append(os.path.dirname(os.getcwd()))
+from utils.utils import check_for_valid_corpus
+
 IMAGE_SIZE = (224, 224)
 IMAGE_CHANNELS = 3
 BATCH_SIZE = 32
 CLASS_NAMES = ['CNV', 'DME', 'DRUSEN', 'NORMAL']
-# CLASS_NAMES = ['CNV', 'NORMAL', 'DRUSEN', 'DME'] # NOTE: THIS WAS ASIEH'S IDEA!
 CORPUS_PATH = '../corpus'
-MODEL_PATH = '../model/saved/simclr_net'
+SIMCLR_MODEL_PATH = '../model/saved/simclr_net'
+INCEPTION_MODEL_PATH = '../model/saved/inceptionv3_net'
 SEED = 42
 
 load_dotenv()
@@ -21,9 +25,10 @@ load_dotenv()
 # suppress tensorflow output
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
-# # load model
-# print('Loading Tensorflow SavedModel()')
-# model = tf.keras.models.load_model(MODEL_PATH)
+# load model
+print('Loading Tensorflow saved models ...')
+simclr_model = tf.keras.models.load_model(SIMCLR_MODEL_PATH)
+# inception_model = tf.keras.models.load_model(INCEPTION_MODEL_PATH)
 
 def get_liveness():
     # return basic api liveness information
@@ -36,18 +41,62 @@ def get_liveness():
     }
 
 
-def predict_from_param():
-    pass
-
 def get_classification_report_from_corpus(model_name: str):
     # endpoint to do classification for the batteries-included corpus
-    subdirs = os.listdir(CORPUS_PATH)
-    subdirs.remove('.DS_Store')
 
-    if not subdirs:
+    if model_name == 'inceptionv3':
+        # model = inception_model
+        pass
+    else:
+        model = simclr_model
+    
+    if not check_for_valid_corpus(CORPUS_PATH):
         response = {
-
+            "error": "Corpus has no directories or is emtpy."
         }
+    else:
+        ground_truth_labels = []
+
+        # collect the ground-truth label indexes from the corpus
+        subdirs = os.listdir(CORPUS_PATH)
+        subdirs.remove('.DS_Store')
+
+        for subdir in subdirs:
+            image_list = os.listdir(os.path.join(CORPUS_PATH, subdir))
+            for image in image_list:
+                ground_truth_labels.append(CLASS_NAMES.index(image[:image.index('-')]))
+
+        # load the dataset and make predictions to get the predicted class label indexes
+        test_data = tf.keras.utils.image_dataset_from_directory(
+            directory=os.path.join(CORPUS_PATH),
+            labels='inferred',
+            label_mode='categorical',
+            batch_size=BATCH_SIZE,
+            image_size=IMAGE_SIZE,
+            shuffle=True,
+            seed=SEED,
+        )
+
+        y_pred = model.predict(test_data)
+        predictions = [ CLASS_NAMES.index(CLASS_NAMES[np.argmax(p)]) for p in y_pred ]
+
+        # build classification report
+        report = classification_report(
+            y_true=ground_truth_labels, 
+            y_pred=predictions, 
+            output_dict=True,
+            zero_division=0
+        )
+
+        response = {
+            'classification_report': report
+        }
+    
+    return response
+
+
+def predict_from_param():
+    pass
 
 
 def predict_from_corpus(n:int = 1, stratify:bool = False):
