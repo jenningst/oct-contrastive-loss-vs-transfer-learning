@@ -4,7 +4,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from classifier.model_methods import predict_from_corpus, predict_from_param
+from model_methods import predict_from_corpus, predict_from_param
 
 # setup api w/ CORS
 api = FastAPI()
@@ -35,6 +35,7 @@ async def root():
     }
 
 
+# TODO: this endpoint needs to stream in image bytes as a payload
 @api.get('/predict/{image}')
 async def predict(image):
     # endpoint for inference on parameterized instance
@@ -42,12 +43,16 @@ async def predict(image):
     return json.dumps(response)
 
 
-@api.get('/corpus_predict/')
-async def predict():
+@api.get('/corpus_predict/{num_samples}')
+async def predict(num_samples):
     # endpoint for inference on instance from curated corpus
-    response = predict_from_corpus()
+    response = predict_from_corpus(num_samples)
     return response
 
 
 if __name__ == '__main__':
-    uvicorn.run(api, host='127.0.0.1', port=8000)
+    # uvicorn.run(api, host='127.0.0.1', port=8000)
+
+    # TODO: remove the code below after finalization
+    resp = predict_from_corpus(20)
+    print(resp)
