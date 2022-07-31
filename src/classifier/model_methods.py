@@ -1,9 +1,10 @@
-from tkinter import image_names
-import numpy as np
 import os
 import random
+
+import numpy as np
 import tensorflow as tf
 
+from dotenv import load_dotenv
 from sklearn.metrics import classification_report
 
 IMAGE_SIZE = (224, 224)
@@ -15,17 +16,38 @@ CORPUS_PATH = '../corpus'
 MODEL_PATH = '../model/saved/simclr_net'
 SEED = 42
 
+load_dotenv()
+
 # suppress tensorflow output
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
+# # load model
+# print('Loading Tensorflow SavedModel()')
+# model = tf.keras.models.load_model(MODEL_PATH)
 
-# load model
-print('Loading Tensorflow SavedModel()')
-model = tf.keras.models.load_model(MODEL_PATH)
+def get_liveness():
+    # return basic api liveness information
+    return { 
+        'host': os.getenv("API_HOST"),
+        'port': int(os.getenv("API_PORT")),
+        'service': 'inference',
+        'status': 'online',
+        'docs': f"http://{os.getenv('API_HOST')}:{os.getenv('API_PORT')}/docs"
+    }
 
 
 def predict_from_param():
     pass
+
+def get_classification_report_from_corpus(model_name: str):
+    # endpoint to do classification for the batteries-included corpus
+    subdirs = os.listdir(CORPUS_PATH)
+    subdirs.remove('.DS_Store')
+
+    if not subdirs:
+        response = {
+
+        }
 
 
 def predict_from_corpus(n:int = 1, stratify:bool = False):
