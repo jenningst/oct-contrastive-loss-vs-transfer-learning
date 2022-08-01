@@ -28,7 +28,7 @@ tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 # load model
 print('Loading Tensorflow saved models ...')
 simclr_model = tf.keras.models.load_model(SIMCLR_MODEL_PATH)
-# inception_model = tf.keras.models.load_model(INCEPTION_MODEL_PATH)
+# inception_model = tf.keras.models.load_model(INCEPTION_MODEL_PATH) TODO: implement after endpoints working for simclr
 
 def get_liveness():
     # return basic api liveness information
@@ -95,7 +95,7 @@ def get_classification_report_from_corpus(model_name: str):
     return response
 
 
-def predict_from_param():
+def predict_from_image_upload():
     pass
 
 

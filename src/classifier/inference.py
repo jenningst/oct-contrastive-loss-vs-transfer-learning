@@ -79,14 +79,12 @@ async def classification_report(model_name: ModelName):
 #     return json.dumps(response)
 
 
-@api.get('/corpus_predict/{num_samples}')
-async def predict(model_name: ModelName, num_samples: int=1):
-    # endpoint to do inference on instance from curated corpus
-    response = predict_from_corpus(model_name.value, num_samples)
-    return response
-
-
-
+# NOTE: This endpoint gets removed after the /predict endpoint is working
+# @api.get('/corpus_predict/{num_samples}')
+# async def predict(model_name: ModelName, num_samples: int=1):
+#     # endpoint to do inference on instance from curated corpus
+#     response = predict_from_corpus(model_name.value, num_samples)
+#     return response
 
 
 if __name__ == '__main__':
