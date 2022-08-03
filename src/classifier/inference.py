@@ -19,7 +19,7 @@ from model_methods import (
     get_liveness
 )
 
-
+# load environment variables
 load_dotenv()
 
 # setup api w/ CORS
@@ -31,7 +31,6 @@ api.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 # model class for handling predictions using different models
 class ModelName(str, Enum):
@@ -55,14 +54,11 @@ class LivenessOut(BaseModel):
 # class ClassificationOut(BaseModel):
 #     report: Union[ClassificationScore, None] == None
 
-
-
 @api.get('/', response_model=LivenessOut)
 async def root():
     # endpoint for api liveness status
     response = get_liveness()
     return response
-
 
 @api.get('classification_report/')
 async def classification_report(model_name: ModelName):
@@ -70,14 +66,12 @@ async def classification_report(model_name: ModelName):
     response = get_classification_report_from_corpus(model_name.value)
     return response
 
-
 # # TODO: this endpoint needs to stream in image bytes as a payload
 # @api.get('/predict/')
 # async def predict(image: UploadFile):
 #     # endpoint for inference on parameterized instance
 #     response = predict_from_param(image)
 #     return json.dumps(response)
-
 
 # NOTE: This endpoint gets removed after the /predict endpoint is working
 # @api.get('/corpus_predict/{num_samples}')
