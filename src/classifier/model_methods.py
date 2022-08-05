@@ -28,7 +28,7 @@ tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 # load model
 print('Loading Tensorflow saved models ...')
 simclr_model = tf.keras.models.load_model(SIMCLR_MODEL_PATH)
-# inception_model = tf.keras.models.load_model(INCEPTION_MODEL_PATH) TODO: implement after endpoints working for simclr
+inception_model = tf.keras.models.load_model(INCEPTION_MODEL_PATH)
 
 def get_liveness():
     """
@@ -58,9 +58,7 @@ def get_classification_report_from_corpus(model_name:str = "simclr_model"):
     # endpoint to do classification for the batteries-included corpus
 
     if model_name == 'inceptionv3':
-        # model = inception_model
-        # TODO: implement inception model here
-        pass
+        model = inception_model
     else:
         model = simclr_model
     
@@ -127,9 +125,7 @@ def predict_from_corpus(n:int = 1, stratify:bool = False, model_name:str = "simc
     # e
 
     if model_name == 'inceptionv3':
-        # model = inception_model
-        # TODO: implement inception model here
-        pass
+        model = inception_model
     else:
         model = simclr_model
     
