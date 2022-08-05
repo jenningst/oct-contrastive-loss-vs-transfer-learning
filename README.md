@@ -63,7 +63,7 @@ python -m pytest src/tests/unit/test_utilities.py
 ## Contributors
 - Asieh Harati
 - Wolfgang Black
-- Troy Jennings
+- [Troy Jennings](https://github.com/jenningst)
 
 ## References
 - [Identifying Medical Diagnoses and Treatable Diseases by Image-Based Deep Learning](https://www.cell.com/cell/fulltext/S0092-8674(18)30154-5?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS0092867418301545%3Fshowall%3Dtrue)
