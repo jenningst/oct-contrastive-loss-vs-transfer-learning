@@ -10,6 +10,9 @@ fastapi = "*"
 numpy = "*"
 uvicorn = "*"
 pillow = "*"
+pydantic = "*"
+python-dotenv = "*"
+pytest = "*"
 
 [dev-packages]
 

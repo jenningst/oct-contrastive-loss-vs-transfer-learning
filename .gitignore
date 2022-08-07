@@ -135,7 +135,3 @@ dmypy.json
 
 *credentials
 git_secret.py
-
-# Large models and corpus:
-/src/model/saved/simclr_net/
-src/corpus/*
