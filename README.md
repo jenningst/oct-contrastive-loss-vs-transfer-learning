@@ -4,7 +4,36 @@ Samsung (OCT) Disease Prediction is a utility that facilitates the diagnosis of 
 
 ## Background
 
-Coming Soon! 👀
+The OCT (Optical Coherence Tomography) is an imaging method used to diagnose the patient’s retinal health into four categories: 
+
+-  Normal  
+-  CNV
+-  DME
+-  DRUSEN
+
+### Goal
+
+1. create a baseline: reproduce the SOTA classification accuracy by training a Deep CNN (Supervised Learning) We use Inception_V3 model for this part. 
+2. improve the classification accuracy over the baseline in part 1 using the self-supervised method described in simclr paper.
+	- Learn the Unsupervised Features based on the Self-Supervision technique 
+	- Train a classification head on top of the learned Unsupervised Features to further improve the accuracy upon the established baseline. 
+
+### Importance
+* This tool can expedite the diagnosis of treatable diseases that can lead to blindness. 
+
+* By doing so, medication can be prescribed in time for the patients and prevent them from becoming blind. 
+ 
+* Additionally, the tool has the potential to be generalized in other applications of biomedical imaging including x-ray, MRI, and computer tomography)
+
+To give some context, 30 million OCT scans are produced each year. Nearly 11 million people in the US alone will suffer from 1 of these diseases.
+
+### Audience
+* The outcome is a support tool that provides retinal specialists with accurate and timely diagnosis of key pathology in OCT images. 
+* The OCT images can be used both for populations without proper access, and for those in overpopulated areas in order to reduce patient burden by using automated triage systems.
+
+### Data source
+[Mendeley] (https://data.mendeley.com/datasets/rscbjbr9sj/2)
+
 
 ## Getting Started
 
@@ -61,7 +90,7 @@ python -m pytest src/tests/unit/test_utilities.py
 ```
 
 ## Contributors
-- Asieh Harati
+- [Asieh Harati](https://github.com/AsiehH)
 - Wolfgang Black
 - [Troy Jennings](https://github.com/jenningst)
 
