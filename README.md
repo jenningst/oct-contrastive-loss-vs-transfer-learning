@@ -91,7 +91,7 @@ python -m pytest src/tests/unit/test_utilities.py
 
 ## Contributors
 - [Asieh Harati](https://github.com/AsiehH)
-- Wolfgang Black
+- [Wolfgang Black](https://github.com/wolfgangjblack)
 - [Troy Jennings](https://github.com/jenningst)
 
 ## References
