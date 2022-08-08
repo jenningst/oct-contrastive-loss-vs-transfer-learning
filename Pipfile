@@ -13,6 +13,9 @@ pillow = "*"
 pydantic = "*"
 python-dotenv = "*"
 pytest = "*"
+boto3 = "*"
+botocore = "*"
+streamlit = "*"
 
 [dev-packages]
 
