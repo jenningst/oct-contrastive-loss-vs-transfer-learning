@@ -12,12 +12,7 @@ from fastapi import File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from model_methods import (
-    predict_from_corpus, 
-    predict_from_param,
-    get_classification_report_from_corpus,
-    get_liveness
-)
+import model_methods
 
 # load environment variables
 load_dotenv()
@@ -57,13 +52,13 @@ class LivenessOut(BaseModel):
 @api.get('/', response_model=LivenessOut)
 async def root():
     # endpoint for api liveness status
-    response = get_liveness()
+    response = model_methods.get_liveness()
     return response
 
 @api.get('classification_report/')
 async def classification_report(model_name: ModelName):
     # endpoint to get classification report for entire sample (batteries-incl.) corpus
-    response = get_classification_report_from_corpus(model_name.value)
+    response = model_methods.get_classification_report_from_corpus(model_name.value)
     return response
 
 # # TODO: this endpoint needs to stream in image bytes as a payload

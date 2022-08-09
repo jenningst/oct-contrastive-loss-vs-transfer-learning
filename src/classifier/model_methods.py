@@ -9,7 +9,8 @@ from dotenv import load_dotenv
 from sklearn.metrics import classification_report
 
 sys.path.append(os.path.dirname(os.getcwd()))
-from utils.utils import check_for_valid_corpus, create_sample_set
+
+import utils
 
 IMAGE_SIZE = (224, 224)
 IMAGE_CHANNELS = 3
@@ -63,7 +64,7 @@ def get_classification_report_from_corpus(model_name:str = "simclr_model"):
         model = simclr_model
     
     # check for invalid directory contents
-    if not check_for_valid_corpus(CORPUS_PATH):
+    if not utils.check_for_valid_corpus(CORPUS_PATH):
         response["error"] = "Corpus has no directories or is empty."
     else:
         ground_truth_labels = []
@@ -132,11 +133,11 @@ def predict_from_corpus(n:int = 1, stratify:bool = False, model_name:str = "simc
     response = {}
 
     # check for invalid directory contents
-    if not check_for_valid_corpus(CORPUS_PATH):
+    if not utils.check_for_valid_corpus(CORPUS_PATH):
         response["error"] = "Corpus has no directories or is empty."
     else:
         # sample the corpus
-        class_samples = create_sample_set(
+        class_samples = utils.create_sample_set(
             corpus_path=CORPUS_PATH,
             n=n, 
             stratify=stratify
