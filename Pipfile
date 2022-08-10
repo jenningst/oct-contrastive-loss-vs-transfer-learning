@@ -16,6 +16,7 @@ pytest = "*"
 boto3 = "*"
 botocore = "*"
 streamlit = "*"
+gdown = "*"
 
 [dev-packages]
 
