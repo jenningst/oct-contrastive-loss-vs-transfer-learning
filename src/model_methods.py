@@ -114,7 +114,7 @@ def get_classification_report_from_corpus(model_name:str = "simclrv2"):
     return response
 
 
-def predict_from_corpus(model_name:str = "simclrv2", n:int = 1, stratify:bool = False, random_state:int = 42):
+def predict_from_corpus(model_name:str = "simclrv2", n:int = 1, stratify:bool = False):
     """
     Endpoint to run inference for n instances from the corpus.
 
@@ -129,8 +129,6 @@ def predict_from_corpus(model_name:str = "simclrv2", n:int = 1, stratify:bool = 
     :return: 
     :rtype: _type_
     """
-
-    random.seed(random_state)
 
     if model_name == "inceptionv3":
         model = inception_model
@@ -149,7 +147,7 @@ def predict_from_corpus(model_name:str = "simclrv2", n:int = 1, stratify:bool = 
         class_samples = utils.create_sample_set(
             corpus_path=CORPUS_PATH,
             n=n, 
-            stratify=stratify
+            stratify=stratify,
         )
 
         prediction_responses = []

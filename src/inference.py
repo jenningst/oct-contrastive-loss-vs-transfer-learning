@@ -43,15 +43,6 @@ class LivenessOut(BaseModel):
     status: str
     docs: str
 
-# # TODO: finish classification models, if feasible
-# class ClassificationScore(BaseModel):
-#     precision: float
-#     recall: float
-#     f1_score: float # TODO: update the classification report object to include f1_score instead of f1-score key
-#     support: int
-
-# class ClassificationOut(BaseModel):
-#     report: Union[ClassificationScore, None] == None
 
 @api.get('/', response_model=LivenessOut)
 async def root():
@@ -70,15 +61,9 @@ async def classification_report(model_name: ModelName):
 @api.get('/corpus_predict/')
 async def predict(model_name: ModelName, num_samples: int=1, stratify: bool=False):
     # endpoint to do inference on instance from curated corpus
-    response = predict_from_corpus(model_name.value, num_samples)
+    response = predict_from_corpus(model_name.value, num_samples, stratify)
     return response
 
-# # TODO: this endpoint needs to stream in image bytes as a payload
-# @api.get('/predict/')
-# async def predict(image: UploadFile):
-#     # endpoint for inference on parameterized instance
-#     response = predict_from_param(image)
-#     return json.dumps(response)
 
 if __name__ == '__main__':
     uvicorn.run(api, host='127.0.0.1', port=8000)
