@@ -16,7 +16,7 @@ IMAGE_CHANNELS = 3
 BATCH_SIZE = 32
 CLASS_NAMES = ['CNV', 'DME', 'DRUSEN', 'NORMAL']
 CORPUS_PATH = './corpus'
-SIMCLR_MODEL_PATH = './model/saved/simclr_net'
+SIMCLR_MODEL_PATH = './model/saved/simclrv2_net'
 INCEPTION_MODEL_PATH = './model/saved/inceptionv3_net'
 SEED = 42
 
