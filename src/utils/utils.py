@@ -70,6 +70,7 @@ def create_sample_set(corpus_path:str, n:int = 1, stratify:bool = False, random_
     """
 
     random.seed(random_state)
+    n = int(n)
 
     # build the manifest and sample cache
     manifest, class_count, total_count = build_sampling_manifeset(corpus_path)

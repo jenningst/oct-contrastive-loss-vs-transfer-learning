@@ -8,17 +8,16 @@ import tensorflow as tf
 from dotenv import load_dotenv
 from sklearn.metrics import classification_report
 
-sys.path.append(os.path.dirname(os.getcwd()))
+from utils import utils
 
-import utils
-
-IMAGE_SIZE = (224, 224)
+IMAGE_SIZE_SIMCLR = (224, 224)
+IMAGE_SIZE_INCEPTION = (299, 299)
 IMAGE_CHANNELS = 3
 BATCH_SIZE = 32
 CLASS_NAMES = ['CNV', 'DME', 'DRUSEN', 'NORMAL']
-CORPUS_PATH = '../corpus'
-SIMCLR_MODEL_PATH = '../model/saved/simclr_net'
-INCEPTION_MODEL_PATH = '../model/saved/inceptionv3_net'
+CORPUS_PATH = './corpus'
+SIMCLR_MODEL_PATH = './model/saved/simclr_net'
+INCEPTION_MODEL_PATH = './model/saved/inceptionv3_net'
 SEED = 42
 
 load_dotenv()
@@ -47,7 +46,7 @@ def get_liveness():
     }
 
 
-def get_classification_report_from_corpus(model_name:str = "simclr_model"):
+def get_classification_report_from_corpus(model_name:str = "simclrv2"):
     """
     Endpoint to return a classification report for all sample instances in the included corpus.
 
@@ -56,59 +55,66 @@ def get_classification_report_from_corpus(model_name:str = "simclr_model"):
     :return: classification report as a json (dict) object
     :rtype: dict
     """
-    # endpoint to do classification for the batteries-included corpus
 
-    if model_name == 'inceptionv3':
+    if model_name == "inceptionv3":
         model = inception_model
+        image_size = IMAGE_SIZE_INCEPTION
     else:
         model = simclr_model
+        image_size = IMAGE_SIZE_SIMCLR
     
     # check for invalid directory contents
     if not utils.check_for_valid_corpus(CORPUS_PATH):
         response["error"] = "Corpus has no directories or is empty."
     else:
         ground_truth_labels = []
+        images = []
 
         # collect the ground-truth label indexes from the corpus
         subdirs = os.listdir(CORPUS_PATH)
         if ".DS_Store" in subdirs:
-            subdirs.remove('.DS_Store') # remove hidden files for mac
+            subdirs.remove(".DS_Store") # remove hidden files for mac
 
         # create a list of the ground-truth labels
         for subdir in subdirs:
             image_list = os.listdir(os.path.join(CORPUS_PATH, subdir))
+            images.extend(image_list)
             for image in image_list:
-                ground_truth_labels.append(CLASS_NAMES.index(image[:image.index('-')]))
+                if image != ".DS_Store":
+                    # add the class label index and images to cache
+                    ground_truth_labels.append(CLASS_NAMES.index(image[:image.index("-")]))
 
-        # load the dataset and make predictions to get the predicted class label indexes
-        test_data = tf.keras.utils.image_dataset_from_directory(
-            directory=os.path.join(CORPUS_PATH),
-            labels='inferred',
-            label_mode='categorical',
-            batch_size=BATCH_SIZE,
-            image_size=IMAGE_SIZE,
-            shuffle=True,
-            seed=SEED,
-        )
-        y_pred = model.evaluate(test_data)
-        predictions = [ CLASS_NAMES.index(CLASS_NAMES[np.argmax(p)]) for p in y_pred ]
+        # make prediction on each sample image
+        y_pred = []
+        for idx, image in enumerate(images):
+            # preprocess the image and resize
+            img = tf.keras.preprocessing.image.load_img(
+                path=os.path.join(CORPUS_PATH, image[:image.index("-")], image),
+                target_size=image_size
+            )
+            img_array = tf.keras.preprocessing.image.img_to_array(img=img)
+            img_array = tf.expand_dims(img_array, 0)
+
+            # make predictions and add to response
+            preds = model.predict(img_array)
+            y_pred.append(np.argmax(preds[0]))
 
         # build classification report
         report = classification_report(
             y_true=ground_truth_labels, 
-            y_pred=predictions, 
+            y_pred=y_pred, 
             output_dict=True,
             zero_division=0
         )
 
         response = {
-            'classification_report': report
+            "classification_report": report
         }
     
     return response
 
 
-def predict_from_corpus(n:int = 1, stratify:bool = False, model_name:str = "simclr_model", random_state:int = 42):
+def predict_from_corpus(model_name:str = "simclrv2", n:int = 1, stratify:bool = False, random_state:int = 42):
     """
     Endpoint to run inference for n instances from the corpus.
 
@@ -123,12 +129,15 @@ def predict_from_corpus(n:int = 1, stratify:bool = False, model_name:str = "simc
     :return: 
     :rtype: _type_
     """
-    # e
 
-    if model_name == 'inceptionv3':
+    random.seed(random_state)
+
+    if model_name == "inceptionv3":
         model = inception_model
+        image_size = IMAGE_SIZE_INCEPTION
     else:
         model = simclr_model
+        image_size = IMAGE_SIZE_SIMCLR
     
     response = {}
 
@@ -148,8 +157,8 @@ def predict_from_corpus(n:int = 1, stratify:bool = False, model_name:str = "simc
         for idx, image in enumerate(class_samples):
             # preprocess the image and resize
             img = tf.keras.preprocessing.image.load_img(
-                path=os.path.join(CORPUS_PATH, image),
-                target_size=IMAGE_SIZE
+                path=os.path.join(CORPUS_PATH, image[:image.index("-")], image),
+                target_size=image_size
             )
             img_array = tf.keras.preprocessing.image.img_to_array(img=img)
             img_array = tf.expand_dims(img_array, 0)

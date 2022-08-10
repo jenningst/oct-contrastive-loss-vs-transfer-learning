@@ -15,6 +15,16 @@ def test_corpus_is_valid():
     assert check_for_valid_corpus(corpus_path=CORPUS_DIR) == True, \
         f"Corpus is invalid"
 
+    
+def test_build_sampling_manifest_returns_proper_datatypes():
+    manifest, instance_count, total_count = build_sampling_manifeset(corpus_path=CORPUS_DIR)
+    assert isinstance(manifest, list), \
+        f"Expected manifest to be a list; got: {type(manifest)}"
+    assert isinstance(instance_count, int), \
+        f"Expected instance_count to be an int; got: {type(instance_count)}"
+    assert isinstance(total_count, int), \
+        f"Expected total_count to be an int; got: {type(total_count)}"
+
 
 def test_build_sampling_manifest_not_empty():
     manifest, instance_count, total_count = build_sampling_manifeset(corpus_path=CORPUS_DIR)
@@ -54,7 +64,7 @@ def test_stratified_sampling_greater_than_one_returns_correct_samples_per_class(
 
 def test_stratified_sampling_greater_than_class_counts_returns_max_samples_per_class():
     samples = create_sample_set(corpus_path=CORPUS_DIR, n=6, stratify=True)
-    assert len(samples) == 20, \
+    assert len(samples) == 16, \
         f"Expected stratified samples to be 4, got: {len(samples)}"
 
 
@@ -72,7 +82,7 @@ def test_sampling_greater_than_one_returns_correct_samples():
 
 def test_sampling_greater_than_n_returns_max_samples():
     samples = create_sample_set(corpus_path=CORPUS_DIR, n=1000, stratify=False)
-    assert len(samples) == 20, \
+    assert len(samples) == 16, \
         f"Expected stratified samples to be 20, got: {len(samples)}"
 
 

@@ -8,11 +8,15 @@ from typing import Union
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from fastapi import File, UploadFile
+# from fastapi import File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-import model_methods
+from model_methods import (
+    get_liveness,
+    get_classification_report_from_corpus,
+    predict_from_corpus
+)
 
 # load environment variables
 load_dotenv()
@@ -30,7 +34,7 @@ api.add_middleware(
 # model class for handling predictions using different models
 class ModelName(str, Enum):
     inception = 'inceptionv3'
-    simclr = 'simclr_student'
+    simclr = 'simclrv2'
 
 class LivenessOut(BaseModel):
     host: str
@@ -52,13 +56,21 @@ class LivenessOut(BaseModel):
 @api.get('/', response_model=LivenessOut)
 async def root():
     # endpoint for api liveness status
-    response = model_methods.get_liveness()
+    response = get_liveness()
     return response
 
-@api.get('classification_report/')
+
+@api.get('/classification_report/')
 async def classification_report(model_name: ModelName):
     # endpoint to get classification report for entire sample (batteries-incl.) corpus
-    response = model_methods.get_classification_report_from_corpus(model_name.value)
+    response = get_classification_report_from_corpus(model_name.value)
+    return response
+
+
+@api.get('/corpus_predict/')
+async def predict(model_name: ModelName, num_samples: int=1, stratify: bool=False):
+    # endpoint to do inference on instance from curated corpus
+    response = predict_from_corpus(model_name.value, num_samples)
     return response
 
 # # TODO: this endpoint needs to stream in image bytes as a payload
@@ -68,19 +80,5 @@ async def classification_report(model_name: ModelName):
 #     response = predict_from_param(image)
 #     return json.dumps(response)
 
-# NOTE: This endpoint gets removed after the /predict endpoint is working
-# @api.get('/corpus_predict/{num_samples}')
-# async def predict(model_name: ModelName, num_samples: int=1):
-#     # endpoint to do inference on instance from curated corpus
-#     response = predict_from_corpus(model_name.value, num_samples)
-#     return response
-
-
 if __name__ == '__main__':
     uvicorn.run(api, host='127.0.0.1', port=8000)
-
-    # TODO: remove the code below after finalization
-    # resp = predict_from_corpus(20)
-    # print(resp)
-
-    # print(get_classification_report_from_corpus(model_name='simclr_student'))
