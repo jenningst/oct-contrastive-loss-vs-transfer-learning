@@ -64,12 +64,12 @@ def build_sampling_manifeset(corpus_path:str = None) -> List[List[str]]:
     return (manifest, class_count, total_count)
 
 
-def create_sample_set(corpus_path:str, n:int = 1, stratify:bool = False, random_state:int = 42) -> List:
+def create_sample_set(corpus_path:str, n:int = 1, stratify:bool = False) -> List:
     """
     Samples the corpus manifest in a stratified or non-stratified approach and returns a list of instances.
     """
 
-    random.seed(random_state)
+    n = int(n)
 
     # build the manifest and sample cache
     manifest, class_count, total_count = build_sampling_manifeset(corpus_path)
@@ -82,7 +82,7 @@ def create_sample_set(corpus_path:str, n:int = 1, stratify:bool = False, random_
             n = class_count
         # sample n instances from each class label directory
         for class_index in range(len(manifest)):
-            class_samples.extend(random.sample(manifest[class_index], int(n)))
+            class_samples.extend(random.sample(manifest[class_index], int(n)))       
     else:
         if n > total_count:
             print("n is less than the available instances in the corpus, returning max samples")
