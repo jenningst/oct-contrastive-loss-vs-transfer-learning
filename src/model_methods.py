@@ -38,12 +38,9 @@ def get_liveness():
     :rtype: dict
     """
     return { 
-        'host': os.getenv("API_HOST"),
-        'port': int(os.getenv("API_PORT")),
         'service': 'inference',
         'status': 'online',
-        'docs': f"http://{os.getenv('API_HOST')}:{os.getenv('API_PORT')}/docs"
-    }
+     }
 
 
 def get_classification_report_from_corpus(model_name:str = "simclrv2"):

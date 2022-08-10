@@ -37,11 +37,8 @@ class ModelName(str, Enum):
     simclr = 'simclrv2'
 
 class LivenessOut(BaseModel):
-    host: str
-    port: int
     service: str
     status: str
-    docs: str
 
 
 @api.get('/', response_model=LivenessOut)
@@ -66,4 +63,4 @@ async def predict(model_name: ModelName, num_samples: int=1, stratify: bool=Fals
 
 
 if __name__ == '__main__':
-    uvicorn.run(api, host='127.0.0.1', port=8000)
+    uvicorn.run(api, host="0.0.0.0", port=8000)
