@@ -20,6 +20,9 @@ RUN apt-get install ffmpeg libsm6 libxext6  -y
 # set workdir to src
 WORKDIR /api/src
 
+# run setup (model-gathering)
+RUN python setup.py
+
 # run the application
 EXPOSE 8000
 CMD ["python", "-m", "inference"]
