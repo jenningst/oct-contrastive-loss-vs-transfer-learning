@@ -57,8 +57,9 @@ docker build -t samsung-oct .
 ### Running
 To create a new container, run the following command:
 ```
-docker run -d --name <CONTAINER_NAME> samsung-oct
+docker run -d --name <CONTAINER_NAME> -p 8000:8000 samsung-oct
 ```
+
 
 ### Using the API
 With the application running in a container, navigate to http://localhost:8000/ to use the basic "liveness" endpoint. Upon requesting the root ("/") endpoint, the API will respond with API status:

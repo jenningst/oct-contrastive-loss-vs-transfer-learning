@@ -22,4 +22,4 @@ WORKDIR /api/src
 
 # run the application
 EXPOSE 8000
-CMD ["python", "-m", "classifier.main"]
+CMD ["python", "-m", "inference"]
