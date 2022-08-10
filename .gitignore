@@ -134,8 +134,7 @@ dmypy.json
 .pyre/
 
 # Tensorflow model files
-/model/saved/*
-/model
+model/
 
 *credentials
 git_secret.py
