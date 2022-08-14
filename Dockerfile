@@ -11,7 +11,7 @@ ENV PYTHONUNBUFFERED 1
 
 # upgrade pip & install dependencies
 RUN python -m pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt -q
 
 # add packages for opencv
 RUN apt-get update
