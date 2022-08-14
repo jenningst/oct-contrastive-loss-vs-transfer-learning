@@ -3,7 +3,6 @@
 Samsung (OCT) Disease Prediction is a utility that facilitates the diagnosis of retinal disease from optical coherence tomography images. This project utilizes supervised and semi-supervised techniques to generate models trained at multi-class disease classification and exposes model inference through a collection of REST-ful API endpoints. The full project is deployable as a stand-alone, containerized application or on popular cloud-computing environments.
 
 ## Background
-
 The OCT (Optical Coherence Tomography) is an imaging method used to diagnose the patient’s retinal health into four categories: 
 
 -  Normal  
@@ -34,9 +33,7 @@ To give some context, 30 million OCT scans are produced each year. Nearly 11 mil
 ### Data source
 [Mendeley] (https://data.mendeley.com/datasets/rscbjbr9sj/2)
 
-
 ## Getting Started
-
 Model inference for supervised and semi-supervised learning methods are exposed through API endpoints using FastAPI. For convenience, the utility comes included with trained models -- an InceptionV3 neural network for supervised image classification and a ResNet-50 neural network utilizing the SimCLRv2 methodology -- available in the `src/classifier/model` directory. Furthermore, the repository includes a set of sample instances that were unseen from either model, all available in the `src/corpus` directory.
 
 ### Pre-Requisites
@@ -60,32 +57,130 @@ To create a new container, run the following command:
 docker run -d --name <CONTAINER_NAME> -p 8000:8000 samsung-oct
 ```
 
+**NOTE** The API may not be immediately available after running a container since the saved models need to be loaded.
 
-### Using the API
-With the application running in a container, navigate to http://localhost:8000/ to use the basic "liveness" endpoint. Upon requesting the root ("/") endpoint, the API will respond with API status:
+## Endpoints
+### Liveness Test
+The root endpoint to test whether the API service is running and functional. 
 
+#### Request
+```http
+GET /
+```
+
+#### Parameters
+<!-- | Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `api_key` | `string` | **Required**. Your Gophish API key | -->
+`None`
+
+#### Response
 ```
 {
-    "host": "localhost"
-    "port": 8000
     "service": "inference"
     "status": "online"
-    "docs": "http://localhost:8000/docs"
 }
 ```
 
-### Endpoints
+### Classification Report
+An endpoint to return a classification report from all instances in the corpus. Either the `inceptionv3` or `simclrv2` models can be used.
 
-Coming Soon! 👀
+#### Request
+```http
+GET /classification_report/?model_name={{model_name}}
+```
 
-### Testing
+#### Parameters
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `model_name` | `string` | **Required**. Either `inceptionv3` or `simclr` to generate a classification report. |
+
+
+#### Response
+```
+{
+    "classification_report": {
+        "0": {
+            "precision": 0.6666666666666666,
+            "recall": 1.0,
+            "f1-score": 0.8,
+            "support": 4
+        },
+        "1": {
+            "precision": 0.375,
+            "recall": 0.75,
+            "f1-score": 0.5,
+            "support": 4
+        },
+        "2": {
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1-score": 0.6666666666666666,
+            "support": 4
+        },
+        "3": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1-score": 0.0,
+            "support": 4
+        },
+        "accuracy": 0.5625,
+        "macro avg": {
+            "precision": 0.5104166666666666,
+            "recall": 0.5625,
+            "f1-score": 0.4916666666666667,
+            "support": 16
+        },
+        "weighted avg": {
+            "precision": 0.5104166666666666,
+            "recall": 0.5625,
+            "f1-score": 0.4916666666666667,
+            "support": 16
+        }
+    }
+}
+```
+
+### Corpus Predict
+An endpoint to return predictions for varying number of instances from the corpus.
+
+**NOTE**: When stratification is used, sampling across each class will be conducted. The API will return the max number of instances in teach class if `num_samples` exceeds the total available instances in a given class in the corpus. When stratification is not used, random sampling across classes will be conducted.
+
+#### Request
+```http
+GET /corpus_predict/?model_name={{model_name}}&num_samples={{num_samples}}&stratify={{stratify}}
+```
+
+#### Parameters
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `model_name` | `string` | **Required**. Either `inceptionv3` or `simclr` for running inference. Defaults to `inceptionv3`. |
+| `num_samples` | `int` | The number of samples to run inference against. Defaults to 1. |
+| `stratify` | `bool` | Indicator for whether sampling should be stratified across all classes. Defaults to `False`. |
+
+
+#### Response
+```
+{
+    "predictions": [
+        {
+            "index": 0,
+            "instance": "DRUSEN-224974-4.jpeg",
+            "label": "DRUSEN",
+            "prediction": 0
+        }
+    ]
+}
+```
+
+## Testing
 Unit tests and API tests can be run after installing requirements:
-#### Running Unit Tests
+### Running Unit Tests
 ```
 python -m pytest src/tests/unit/test_utilities.py
 ```
 
-#### Running API Tests
+### Running API Tests
 ```
 python -m pytest src/tests/unit/test_utilities.py
 ```
