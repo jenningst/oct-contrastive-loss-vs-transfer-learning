@@ -1,11 +1,11 @@
+# Samsung Optical Coherence Tomography (OCT) Disease Prediction
+
 <p align='center'>
-  <img width="600" src='https://github.com/jenningst/oct-contrastive-loss-vs-transfer-learning/blob/main/assets/amanda-dalbjorn-UbJMy92p8wk-unsplash.jpg' alt='Woman Eye'>
+  <img width="100%" src='https://github.com/jenningst/oct-contrastive-loss-vs-transfer-learning/blob/main/assets/amanda-dalbjorn-UbJMy92p8wk-unsplash-cropped.png' alt='Woman Eye'>
 </p>
 <p align='center'>
   Photo by <a href="https://unsplash.com/@amandadalbjorn?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Amanda Dalbjörn</a> on <a href="https://unsplash.com/s/photos/eye?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
 </p>
-
-# Samsung Optical Coherence Tomography (OCT) Disease Prediction
 
 Samsung (OCT) Disease Prediction is a utility that facilitates the diagnosis of retinal disease from optical coherence tomography images. This project utilizes supervised and semi-supervised techniques to generate models trained at multi-class disease classification and exposes model inference through a collection of REST-ful API endpoints. The full project is deployable as a stand-alone, containerized application or on popular cloud-computing environments.
 
